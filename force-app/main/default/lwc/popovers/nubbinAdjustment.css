@@ -1,0 +1,38 @@
+/**
+ * Nubbin Adjustment Classes
+ * These classes are applied when the popover is shifted to stay within the viewport.
+ * They use local CSS variables (e.g., --adjustment-left) to move the nubbin (triangle) 
+ * so it stays centered on the trigger element despite the popover's shift.
+ */
+
+/* Left Placement Nubbin */
+.nubbin-adjustment_left .slds-nubbin_left:before { 
+    transform: translateY(var(--adjustment-left)) rotate(45deg); 
+} 
+.nubbin-adjustment_left .slds-nubbin_left:after {  
+    transform: translateY(var(--adjustment-left)) rotate(45deg); 
+} 
+
+/* Top Placement Nubbin */
+.nubbin-adjustment_top .slds-nubbin_top:before { 
+    transform: translateX(var(--adjustment-top)) rotate(45deg); 
+} 
+.nubbin-adjustment_top .slds-nubbin_top:after {  
+    transform: translateX(var(--adjustment-top)) rotate(45deg);  
+} 
+
+/* Right Placement Nubbin */
+.nubbin-adjustment_right .slds-nubbin_right:before { 
+    transform: translateY(var(--adjustment-right)) rotate(45deg); 
+} 
+.nubbin-adjustment_right .slds-nubbin_right:after {  
+    transform: translateY(var(--adjustment-right)) rotate(45deg); 
+} 
+
+/* Bottom Placement Nubbin */
+.nubbin-adjustment_bottom .slds-nubbin_bottom:before { 
+    transform: translateX(var(--adjustment-bottom)) rotate(45deg); 
+} 
+.nubbin-adjustment_bottom .slds-nubbin_bottom:after {  
+    transform: translateX(var(--adjustment-bottom)) rotate(45deg); 
+} 

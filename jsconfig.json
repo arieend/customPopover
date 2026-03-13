@@ -1,0 +1,11 @@
+{
+    "compilerOptions": {
+        "experimentalDecorators": true,
+        "baseUrl": ".",
+        "paths": {
+            "c/popovers": ["force-app/main/default/lwc/popovers/popovers.js"]
+        }
+    },
+    "include": ["force-app/main/default/lwc/**/*"],
+    "exclude": ["node_modules", ".sfdx", ".localdevserver"]
+}

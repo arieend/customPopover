@@ -1,28 +1,39 @@
 <template>
-    <!-- Popover Wrapper -->
+    <!-- Root Container for trigger and popover -->
     <div class={popoverContainerClass}>
+        
+        <!-- The absolute-positioned Popover Dialog -->
         <div class={popoverClass}>
-            <section class={popoverSectionClass} role="dialog">
+            <section class={popoverSectionClass} role="dialog" aria-modal="false">
+                
+                <!-- Close Button (Conditional) -->
                 <button if:true={withClose} onclick={handlePopoverClose}
                     class="slds-button slds-button_icon slds-button_icon-small slds-float_right slds-popover__close slds-button_icon-inverse"
                     title="Close dialog">
                     <lightning-icon icon-name="utility:close" alternative-text="close" size="xx-small"
                         variant={closeIconVariant}></lightning-icon>
                 </button>
+
+                <!-- Popover Header -->
                 <header if:true={hasHeader} class="slds-popover__header">
                     <h2 class="slds-text-heading_small">
-                        <slot name="header"></slot>
+                        <slot name="header" onslotchange={handleSlotChange}></slot>
                     </h2>
                 </header>
-                <div if:true={hasBody} class="slds-popover__body body-content">
-                    <slot name="body"></slot>
+
+                <!-- Popover Body (Main Content) -->
+                <div class="slds-popover__body body-content">
+                    <slot name="body" onslotchange={handleSlotChange}></slot>
                 </div>
+
+                <!-- Popover Footer -->
                 <footer if:true={hasFooter} class="slds-popover__footer">
-                    <slot name="footer"></slot>
+                    <slot name="footer" onslotchange={handleSlotChange}></slot>
                 </footer>
             </section>
         </div>
-        <!-- Popover Target Value -->
+
+        <!-- The Trigger (Value/Link) Slots -->
         <span class="main-content">
             <slot name="value" onmouseover={handleMouseOverOrFocusElement} onmouseleave={handleMouseLeaveOrBlurElement}></slot>
             <a>

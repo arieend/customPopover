@@ -1,0 +1,25 @@
+/*
+ * Base Popover Layout and Animations
+ */
+@import "./mainPopovers.css";
+@import "./nubbinAdjustment.css";
+
+/* 
+ * Visible state: Uses local CSS variables for dynamic coordinates.
+ * These are set via JS (style.setProperty) in the component.
+ */
+.popover-show {
+    position: absolute;
+    left: var(--popover-x-pos, 0);
+    top: var(--popover-y-pos, 0);
+    visibility: visible;
+    opacity: 1;
+    z-index: 9999;
+}
+
+/* Hidden state */
+.popover-hide {
+    position: fixed; 
+    visibility: hidden;
+    opacity: 0;
+}

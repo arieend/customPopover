@@ -1,0 +1,31 @@
+{
+  "name": "custompopover",
+  "version": "1.0.0",
+  "description": "A robust, non-modal dialog component for Salesforce Lightning Web Components (LWC). This component is designed to be paired with a hoverable trigger element and supports various sizes, variants, and dynamic positioning.",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "test": "sfdx-lwc-jest",
+    "test:unit": "sfdx-lwc-jest",
+    "test:unit:watch": "sfdx-lwc-jest --watch",
+    "test:unit:debug": "sfdx-lwc-jest --debug",
+    "test:unit:coverage": "sfdx-lwc-jest --coverage"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/arieend/customPopover.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/arieend/customPopover/issues"
+  },
+  "homepage": "https://github.com/arieend/customPopover#readme",
+  "devDependencies": {
+    "@salesforce/sfdx-lwc-jest": "^7.1.2"
+  }
+}
