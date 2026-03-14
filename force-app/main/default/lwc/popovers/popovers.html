@@ -1,12 +1,12 @@
 <template>
-    <!-- Root Container for trigger and popover -->
+    <!-- Relative Container Boundary -->
     <div class={popoverContainerClass}>
         
-        <!-- The absolute-positioned Popover Dialog -->
+        <!-- Absolute-Positioned Popover Overlay -->
         <div class={popoverClass}>
             <section class={popoverSectionClass} role="dialog" aria-modal="false">
                 
-                <!-- Close Button (Conditional) -->
+                <!-- Dismiss Action Form -->
                 <button if:true={withClose} onclick={handlePopoverClose}
                     class="slds-button slds-button_icon slds-button_icon-small slds-float_right slds-popover__close slds-button_icon-inverse"
                     title="Close dialog">
@@ -14,26 +14,26 @@
                         variant={closeIconVariant}></lightning-icon>
                 </button>
 
-                <!-- Popover Header -->
+                <!-- Header Content Block (Conditional) -->
                 <header if:true={hasHeader} class="slds-popover__header">
                     <h2 class="slds-text-heading_small">
                         <slot name="header" onslotchange={handleSlotChange}></slot>
                     </h2>
                 </header>
 
-                <!-- Popover Body (Main Content) -->
+                <!-- Main Display Region -->
                 <div class="slds-popover__body body-content">
                     <slot name="body" onslotchange={handleSlotChange}></slot>
                 </div>
 
-                <!-- Popover Footer -->
+                <!-- Footer Action Region (Conditional) -->
                 <footer if:true={hasFooter} class="slds-popover__footer">
                     <slot name="footer" onslotchange={handleSlotChange}></slot>
                 </footer>
             </section>
         </div>
 
-        <!-- The Trigger (Value/Link) Slots -->
+        <!-- Target Invocation Slots -->
         <span class="main-content">
             <slot name="value" onmouseover={handleMouseOverOrFocusElement} onmouseleave={handleMouseLeaveOrBlurElement}></slot>
             <a>

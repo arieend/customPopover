@@ -1,6 +1,8 @@
 /**
- * Utility functions for popover class and coordinate calculations
+ * @file helper.js
+ * @description Utility functions for generating popover CSS classes and resolving coordinate computations.
  */
+
 import {  
     SLDS_POPOVER_CLASS, 
     POPOVER_SIZES, 
@@ -13,59 +15,62 @@ import {
 } from './constants'
 
 /**
- * Returns the SLDS variant class
- * @param {string} variant 
- * @returns {string}
+ * Retrieves the SLDS variant class.
+ * @param {string} variant - The variant identifier.
+ * @returns {string} The corresponding SLDS class or empty string.
  */
 const getVariant = (variant) => variant ? (VARIANTS[variant.toUpperCase()] ?? "") : "";
 
 /**
- * Returns the SLDS size class
- * @param {string} size 
- * @returns {string}
+ * Retrieves the SLDS size class.
+ * @param {string} size - The size identifier.
+ * @returns {string} The corresponding SLDS size class.
  */
 const getPopoverSize = (size) => size ? (POPOVER_SIZES[size.toUpperCase()] ?? POPOVER_SIZES.MEDIUM) : POPOVER_SIZES.MEDIUM; 
 
 /**
- * Returns the SLDS nubbin placement class
- * @param {string} placement 
- * @returns {string}
+ * Retrieves the SLDS nubbin placement class.
+ * @param {string} placement - The placement identifier.
+ * @returns {string} The corresponding SLDS nubbin class.
  */
 const getNubbinPlacement = (placement) => placement ? (NUBBIN_PLACEMENT[placement.toUpperCase()] ?? NUBBIN_PLACEMENT.DEFAULT) : NUBBIN_PLACEMENT.DEFAULT;
 
 /**
- * Returns the custom adjustment class for the nubbin
- * @param {string} placement 
- * @returns {string}
+ * Retrieves the custom adjustment class for the nubbin element.
+ * @param {string} placement - The placement identifier.
+ * @returns {string} The custom nubbin adjustment class.
  */
 const nubbinAdjustmentClass = (placement) => placement ? (NUBBIN_ADJUSTMENT[placement.toUpperCase()] ?? '') : '';
 
 /**
- * Returns the CSS variable name for nubbin adjustment
- * @param {string} placement 
- * @returns {string}
+ * Retrieves the CSS custom property variable for nubbin adjustment.
+ * @param {string} placement - The placement identifier.
+ * @returns {string} The CSS custom property string.
  */
 const nubbinAdjustmentVars = (placement) => placement ? (NUBBIN_ADJUSTMENT_VARS[placement.toUpperCase()] ?? '') : '';
 
 /**
- * Returns the combined base classes for the popover
- * @param {boolean} isShow 
- * @returns {string}
+ * Generates the visibility base class string for the popover component.
+ * @param {boolean} isShow - Indicates if the popover is currently visible.
+ * @returns {string} The formatted visibility class string.
  */
-const popoverClass = ( isShow = false ) => `popover ${POPOVER_TOGGLE[isShow] ?? ''}`; 
+const popoverClass = (isShow = false) => `popover ${POPOVER_TOGGLE[isShow] ?? ''}`; 
 
 /**
- * Returns the full section class string including variant, size, and nubbin
- * @param {Object} config
- * @returns {string}
+ * Constructs the aggregated SLDS class string for the popover section.
+ * @param {Object} config - Configuration object.
+ * @param {string} config.placement - Alignment placement.
+ * @param {string} config.variant - Styling variant.
+ * @param {string} config.size - Dimensional size.
+ * @returns {string} Fully qualified SLDS class string.
  */
 const popoverSectionClass = ({placement, variant, size}) => 
     `${SLDS_POPOVER_CLASS} ${getNubbinPlacement(placement)} ${getVariant(variant)} ${getPopoverSize(size)}`;
 
 /**
- * Resolves the calculation method name for a given placement
- * @param {string} placement 
- * @returns {string|undefined}
+ * Resolves the positioning calculation method name required for a specific placement.
+ * @param {string} placement - The placement identifier.
+ * @returns {string|undefined} Method name or undefined.
  */
 const calcFunction = (placement) => placement ? CALC_FUNCTION[placement.toUpperCase()] : undefined;
 
@@ -75,4 +80,4 @@ export {
     nubbinAdjustmentClass, 
     nubbinAdjustmentVars,
     calcFunction,
-}
+};

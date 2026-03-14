@@ -1,37 +1,26 @@
-# Popover Component - Technical Implementation
+# Popover (c-popovers)
 
-This component is a high-performance, dynamic popover for the Salesforce Lightning Web Component framework. It avoids common LWC pitfalls like global style mutation and manual DOM checking.
+This directory encompasses the source code for the Custom Popover LWC Component.
 
-## Technical Highlights
+## Architectural Guidelines
 
-### 1. Style Encapsulation
-Unlike the original implementation which modified `document.body.style`, this component uses local **CSS Custom Properties (Variables)**.
-*   The `popoverStyle` calculation happens in JavaScript.
-*   Values are applied via `popover.style.setProperty()` to the internal container.
-*   This ensures that multiple popovers on the same page do not conflict with each other.
+This LWC component follows modern web standards and precise DOM encapsulation to ensure collision-free integrations anywhere within the Salesforce platform context. The internal structure prevents global stylistic bleed and avoids manual DOM traversal queries across unbounded DOM scopes.
 
-### 2. Performance-First Positioning
-*   **Coordinate Calculation:** Occurs during `requestAnimationFrame` to ensure the DOM is ready and dimensions are accurate.
-*   **Reactive Rendering:** Uses `onslotchange` to detect content changes rather than expensive `renderedCallback` checks.
-*   **Visibility Control:** Leverages CSS visibility and opacity for smooth transitions and reduced layout shifts.
+### Module Breakdown
 
-### 3. Case-Insensitive API
-The component's properties (like `placement` and `variant`) are case-insensitive. Input values are automatically mapped to uppercase constants in `helper.js`.
+1.  **`popovers.js`**
+    Primary web component class extending `LightningElement`. Handles state tracking, event bubbling controls (`stopPropagation`), visibility toggling, and layout coordinate offset calculation.
 
-## Internal Architecture
+2.  **`helper.js`**
+    Stateless utility functions processing placement properties into direct SLDS styling classes. Keeps the main component class pure and free of switch/case and long ternary string mapping logic.
 
-*   `popovers.js`: Manages visibility state, event handling (hover, click, blur), and coordinate math.
-*   `helper.js`: Pure utility functions for CSS class generation and positioning calculations.
-*   `constants.js`: Source of truth for SLDS classes and supported variants.
-*   `popovers.css`: Handles layout structure and transitions.
-*   `nubbinAdjustment.css`: Specifically manages the visual nubbin (triangle) position for screen overflows.
+3.  **`constants.js`**
+    Source of truth mapping all supported directional variants, sizes, and layout conditions to respective Salesforce Lightning Design System strings.
 
-## Development Notes
+4.  **`popovers.css` & `nubbinAdjustment.css`**
+    CSS handling structural definition, transitions, and SVG popover arrows alignment. Custom CSS variables (e.g., `--popover-x-pos`) are updated interactively during `requestAnimationFrame` hooks mapped backward via JS layout bounds checking.
 
-*   **Boundary Checking:** The component uses `getBoundingClientRect()` relative to the viewport.
-*   **Nubbin Adjustment:** If a popover is moved to avoid screen overflow, the nubbin (arrow) is automatically recalculated to stay aligned with the trigger element.
-
-## Screenshots
-
-*   **Basic Popover:** `../../../../docs/images/output1.jpg`
-*   **Complex Table Content:** `../../../../docs/images/output2.jpg`
+## Design Constraints
+- Never append nodes recursively manually.
+- Trigger dimensional recalculations linearly using the native SLDS classes mapping grid.
+- All dependencies must be encapsulated within standard LWC slots architecture.

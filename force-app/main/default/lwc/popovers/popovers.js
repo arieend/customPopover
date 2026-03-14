@@ -1,11 +1,9 @@
 /**
- * Custom Popover Component
- * Provides a responsive, SLDS-compliant popover that anchors to a trigger element.
- * 
- * @alias Popovers
- * @extends LightningElement
- * @hideconstructor
+ * @file popovers.js
+ * @description Core JavaScript controller for the Custom Popover LWC.
+ * Handles state, visibility, event dispatching, and dynamic coordinate positioning.
  */
+
 import { LightningElement, api } from 'lwc';
 import { 
     popoverClass,  
@@ -14,89 +12,96 @@ import {
     nubbinAdjustmentVars,
     calcFunction
 } from './helper';
-import { PLACEMENT } from './constants'
+import { PLACEMENT } from './constants';
 
+/**
+ * @class Popovers
+ * @extends LightningElement
+ * @description A responsive, SLDS-compliant popover component that dynamically anchors to a trigger slot.
+ */
 export default class Popovers extends LightningElement {
 
     /**
-     * Size of the popover (small, medium, large)
-     * @type {string}
+     * @api {string} size
+     * @description Popover dimension size ('small', 'medium', 'large').
      * @default 'medium'
      */
     @api size = 'medium';
 
     /**
-     * SLDS Variant (base, warning, error, brand, success, walk, walkalt)
-     * @type {string}
+     * @api {string} variant
+     * @description SLDS visual variant ('base', 'warning', 'error', 'brand', 'success', 'walk', 'walkalt').
      * @default 'base'
      */
     @api variant = 'base';
 
     /**
-     * Preferred placement (top, bottom, left, right)
-     * @type {string}
+     * @api {string} placement
+     * @description Preferred directional placement ('top', 'bottom', 'left', 'right').
      * @default 'top'
      */
     @api placement = PLACEMENT.TOP;
 
     /**
-     * If true, shows close button and stays open until manually closed
-     * @type {boolean}
+     * @api {boolean} withClose
+     * @description Renders a manual close button and suppresses the mouseleave auto-close behavior.
      * @default false
      */
     @api withClose = false;
  
-    // Internal state
+    /** @type {boolean} visibility state */
     isVisible = false;
+    /** @type {boolean} toggle reference for link click activations */
     togglePopover = false;
+    
     popoverXPos = 0;
     popoverYPos = 0;
     adjustment = 0;
     currentPlacement = '';
     activeNubbinClass = '';
 
-    // Slot visibility flags
+    /** @type {boolean} slot availability flags */
     hasHeader = false;
     hasBody = true;
     hasFooter = true;
 
-    /**
-     * Unique identifier for the popover instance
+    /** 
      * @type {string}
+     * @description Unique identifier for DOM class separation. 
      */
     uniqueId = `popover-${Math.random().toString(36).substring(2, 9)}`;
 
     /**
-     * Computed classes for the root container
+     * @returns {string} The computed classes for the absolute-positioned root container.
      */
-    get popoverContainerClass (){
+    get popoverContainerClass() {
         return `popover_container ${this.uniqueId} ${this.activeNubbinClass}`;
     } 
 
     /**
-     * Computed visibility classes for the popover
+     * @returns {string} Visibility classes applied to the popover DOM node.
      */
     get popoverClass() {
         return popoverClass(this.isVisible);
     }
 
     /**
-     * Computed SLDS classes for the popover section
+     * @returns {string} Assembled SLDS styling classes for the popover section.
      */
     get popoverSectionClass() { 
         return popoverSectionClass(this);
-    };
+    }
 
     /**
-     * Returns the icon variant based on the component variant
+     * @returns {string} The variant string for the dismiss icon, if applicable.
      */
-    get closeIconVariant () { 
+    get closeIconVariant() { 
         return this.variant && this.variant !== 'base' ? "inverse" : "";
-    };
+    }
 
     /**
-     * Handles dynamic visibility of slots
-     * @param {Event} event 
+     * Intercepts slotchange events to toggle header/footer rendering regions dynamically.
+     * @param {Event} event - The DOM slotchange event.
      */
     handleSlotChange(event) {
         const slot = event.target;
@@ -109,8 +114,8 @@ export default class Popovers extends LightningElement {
     }
 
     /**
-     * Shows popover on mouse over
-     * @param {Event} event 
+     * Handles trigger mouseover events.
+     * @param {Event} event
      */
     handleMouseOverOrFocusElement(event) {
         event.stopPropagation();
@@ -118,8 +123,8 @@ export default class Popovers extends LightningElement {
     }
   
     /**
-     * Hides popover on mouse leave (if not in 'withClose' mode)
-     * @param {Event} event 
+     * Handles trigger mouseleave events. Overridden by `withClose`.
+     * @param {Event} event
      */
     handleMouseLeaveOrBlurElement(event) {
         event.stopPropagation();
@@ -128,8 +133,8 @@ export default class Popovers extends LightningElement {
     }
 
     /**
-     * Toggles popover visibility on link click
-     * @param {Event} event 
+     * Handles link clicks for toggle-based visibility.
+     * @param {Event} event
      */
     handleLinkClick(event) {
         event.stopPropagation();
@@ -142,7 +147,7 @@ export default class Popovers extends LightningElement {
     }
 
     /**
-     * Manually closes the popover
+     * Forces immediate dismissal of the popover.
      */
     handlePopoverClose() {
         this.isVisible = false;
@@ -150,19 +155,17 @@ export default class Popovers extends LightningElement {
     }
 
     /**
-     * Logic to reveal the popover and trigger coordinate calculation
+     * Activates visibility and issues a dimensional reflow coordinate request.
      */
     handlePopoverShow() {
         this.isVisible = true;
-        
-        // Ensure DOM is rendered before calculating dimensions
         requestAnimationFrame(() => {
             this.calculatePopoverPosition();
         });
     }
 
     /**
-     * Logic to hide the popover
+     * Deactivates visibility if `withClose` is not enabled.
      */
     handlePopoverHide() {
         if (!this.withClose) {
@@ -171,8 +174,8 @@ export default class Popovers extends LightningElement {
     }
   
     /**
-     * Primary logic for coordinate calculation and screen overflow handling.
-     * Applies coordinates via CSS Custom Properties.
+     * Resolves layout coordinates depending on bounds, viewport edges, and placement.
+     * Populates active CSS custom properties affecting `.popover` styles.
      */
     calculatePopoverPosition() {
         const popover = this.template.querySelector(".popover");
@@ -183,19 +186,17 @@ export default class Popovers extends LightningElement {
         const containerRect = container.getBoundingClientRect();
         const popoverRect = popover.getBoundingClientRect();
 
-        // 1. Determine best placement based on viewport
         const placement = this.calcPlacement(containerRect, popoverRect, this.placement);
         this.currentPlacement = placement;
 
-        // 2. Run calculation for the specific placement axis
         const calcMethod = calcFunction(placement);
+        if (!calcMethod) return;
+
         const { popoverXPos, popoverYPos, adjustment } = this[calcMethod](containerRect, popoverRect, placement) ?? {};
 
-        // 3. Apply coordinates to local CSS variables
         popover.style.setProperty('--popover-x-pos', `${popoverXPos}px`);
         popover.style.setProperty('--popover-y-pos', `${popoverYPos}px`);
         
-        // 4. Handle nubbin offset if the popover was shifted
         if (adjustment && placement) {
             popover.style.setProperty(nubbinAdjustmentVars(placement), `${adjustment}px`);
         }
@@ -204,7 +205,11 @@ export default class Popovers extends LightningElement {
     }
 
     /**
-     * Detects if preferred placement causes viewport overflow and returns alternative
+     * Evaluates viewport limits to pivot the requested placement radially if necessary.
+     * @param {DOMRect} containerRect
+     * @param {DOMRect} popoverRect
+     * @param {string} preferredPlacement
+     * @returns {string} Calculated viable placement.
      */
     calcPlacement(containerRect, popoverRect, preferredPlacement) {
         const { top, left, bottom, right } = containerRect;
@@ -219,7 +224,11 @@ export default class Popovers extends LightningElement {
     }
 
     /**
-     * Calculation logic for Left/Right placement
+     * Executes mathematical offset resolution for Left/Right anchored popovers.
+     * @param {DOMRect} containerRect
+     * @param {DOMRect} popoverRect
+     * @param {string} placement
+     * @returns {Object} Computed offset matrix payload.
      */
     calcHorizontal(containerRect, popoverRect, placement) {
         const { width: containerWidth, height: containerHeight, top: containerTop } = containerRect;
@@ -230,7 +239,6 @@ export default class Popovers extends LightningElement {
         const xPos = placement === PLACEMENT.LEFT ? -(popoverWidth + nubbinPadding) : (containerWidth + nubbinPadding);
         
         let adjustment = 0;
-        // Shift popover vertically if it bleeds off the top or bottom edge
         if (containerTop + midHeight < 10) {
             adjustment = -(containerTop + midHeight - 10);
         } else if (containerTop + midHeight + popoverHeight > window.innerHeight - 10) {
@@ -245,10 +253,14 @@ export default class Popovers extends LightningElement {
     }
 
     /**
-     * Calculation logic for Top/Bottom placement
+     * Executes mathematical offset resolution for Top/Bottom anchored popovers.
+     * @param {DOMRect} containerRect
+     * @param {DOMRect} popoverRect
+     * @param {string} placement
+     * @returns {Object} Computed offset matrix payload.
      */
     calcVertical(containerRect, popoverRect, placement) {
-        const { width: containerWidth, height: containerHeight, left: containerLeft, right: containerRight } = containerRect;
+        const { width: containerWidth, height: containerHeight, left: containerLeft } = containerRect;
         const { height: popoverHeight, width: popoverWidth } = popoverRect;
         const nubbinPadding = 14;
 
@@ -257,7 +269,6 @@ export default class Popovers extends LightningElement {
         let midWidth = (containerWidth - popoverWidth) / 2;
         let adjustment = 0;
 
-        // Shift popover horizontally if it bleeds off the left or right edge
         if (containerLeft + midWidth < 4) {
             adjustment = 4 - (containerLeft + midWidth);
             midWidth += adjustment;
